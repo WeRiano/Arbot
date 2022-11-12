@@ -28,7 +28,7 @@ def get_delta_time_minutes(match_time):
 
 def fetch_the_odds_api_matches():
     load_dotenv()
-    key = str(os.environ.get("TheOddsAPIKey"))
+    key = str(os.environ.get("THE_ODDS_API_KEY"))
 
     r = requests.get("https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey={0}&regions=eu&markets=h2h"
                      .format(key))
@@ -103,7 +103,7 @@ def get_fake_arbs():
             "team_b": "Team Super Awesome T1",
             "bookmaker_a": "Bet365",
             "bookmaker_b": "Betsson",
-            "odds_a": 4.0,
+            "odds_a": i,
             "odds_b": 1.5,
             "profit": 13.37,
             "start_time": parse_commence_time(commence_time)

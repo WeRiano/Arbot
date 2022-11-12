@@ -20,7 +20,7 @@ $(document).ready(function() {
   $('button').on('click', function(event) {
     $.ajax({
       data : {
-        select_arb_index : $('#select_arb_index').val()
+        select_arb_index : event.target.value
       },
       type: 'POST',
       url : '/select_arb'

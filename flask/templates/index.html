@@ -5,14 +5,13 @@
 
 {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Arbot</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
+  <img class="img-fluid mr-2" src="static/gold_draven_icon.jpg">
+  <a class="navbar-brand" style="font-size: 25px"> Arbot </a>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <h5> Arbitrage Robot </h5>
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        Free money since 2022
+      </li>
     </ul>
   </div>
 </nav>
@@ -20,6 +19,11 @@
 
 {% block content %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+  setTimeout(function() {
+    window.location.reload();
+  }, {{ seconds_until_refresh * 1000 }})
+</script>
 <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='jquery.js') }}">\x3C/script>')
 </script>
 <script src="{{ url_for('static', filename='form.js') }}"></script>
@@ -32,9 +36,8 @@
             <ul class="list-group">
               {% for arb in arbs %}
               <form id="select_arb_form">
-                  <input type="hidden" id="select_arb_index" name="select_arb_index"
-                         value="{{ loop.index - 1 }}">
-                  <button type="submit" class="list-group-item list-group-item-action text-center">
+                  <button type="submit" value="{{ loop.index - 1 }}"
+                          class="list-group-item list-group-item-action text-center">
                     {{ arb.team_a }} versus {{ arb.team_b }}
                   </button>
               </form>
@@ -76,8 +79,8 @@
           </table>
         <div class="form-group">
           <form id="new_investment_form">
-            <input type="hidden" id="investment_odds_a" value="">
-            <input type="hidden" id="investment_odds_b" value="">
+            <input type="hidden" id="investment_odds_a" value="1">
+            <input type="hidden" id="investment_odds_b" value="1">
             <input type="number" id="new_investment" name="new_investment" class="form-control"
                    placeholder="Enter your investment">
           </form>
