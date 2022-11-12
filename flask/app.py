@@ -62,7 +62,7 @@ def update_global_args():
         print("[Update Thread] Acquiring lock")
         global_arb_lock.acquire()
         print("[Update Thread] Grabbing Arbs from API")
-        global_arbs = get_fake_arbs()
+        global_arbs = get_all_arbs()
         print("[Update Thread] Releasing lock")
         global_arb_lock.release()
         global_next_update = datetime.now(tz=timezone.utc) + timedelta(hours=global_hours_delta)
@@ -71,7 +71,7 @@ def update_global_args():
 
 def run():
     global global_arbs
-    global_arbs = get_fake_arbs()
+    global_arbs = get_all_arbs()
     update_thread = Thread(target=update_global_args)
     #server_thread = Thread(target=flask_app.run)
     update_thread.start()
