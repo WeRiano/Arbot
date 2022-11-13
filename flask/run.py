@@ -1,5 +1,2 @@
-from app import run, flask_app
-
-run()
-app = flask_app
+from app import flask_app as app
 

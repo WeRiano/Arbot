@@ -33,6 +33,12 @@ $(document).ready(function() {
       $('#odds_b_cell').text(data.odds_b);
       $('#category_cell').text(data.category);
       $('#commence_time_cell').text(data.start_time);
+      $('#remaining_requests_cell').text(data.remaining_requests);
+      $('#next_update_cell').text(data.next_update);
+
+      $('#profit_cell').text(data.profit);
+      $('#to_bet_a_cell').text(data.to_bet_a);
+      $('#to_bet_b_cell').text(data.to_bet_b);
 
       $('#investment_odds_a').val(data.odds_a);
       $('#investment_odds_b').val(data.odds_b);

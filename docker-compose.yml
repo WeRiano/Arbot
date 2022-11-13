@@ -9,6 +9,8 @@ services:
       - THE_ODDS_API_KEY=${THE_ODDS_API_KEY}
     expose:
       - 8080
+    depends_on:
+      - redis
 
   nginx:
     build: ./nginx
@@ -16,3 +18,10 @@ services:
     restart: always
     ports:
       - "80:80"
+
+  redis:
+    image: redis/redis-stack-server
+    container_name: redis
+    restart: always
+    ports:
+      - "6379"

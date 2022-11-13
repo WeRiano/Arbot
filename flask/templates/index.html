@@ -22,7 +22,7 @@
 <script>
   setTimeout(function() {
     window.location.reload();
-  }, {{ seconds_until_refresh * 1000 }})
+  }, {{ ms_until_refresh }})
 </script>
 <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='jquery.js') }}">\x3C/script>')
 </script>
@@ -38,7 +38,7 @@
               <form id="select_arb_form">
                   <button type="submit" value="{{ loop.index - 1 }}"
                           class="list-group-item list-group-item-action text-center">
-                    {{ arb.team_a }} versus {{ arb.team_b }}
+                    {{ arb.profit }} - {{ arb.team_a }} versus {{ arb.team_b }}
                   </button>
               </form>
               {% endfor %}
@@ -82,7 +82,7 @@
             <input type="hidden" id="investment_odds_a" value="1">
             <input type="hidden" id="investment_odds_b" value="1">
             <input type="number" id="new_investment" name="new_investment" class="form-control"
-                   placeholder="Enter your investment">
+                   placeholder="Enter bet return">
           </form>
         </div>
         <table class="table">
@@ -96,8 +96,16 @@
             <td id="category_cell" > </td>
           </tr>
           <tr>
-            <th scope="row"> Starts </th>
+            <th scope="row"> Match Start </th>
             <td id="commence_time_cell"> </td>
+          </tr>
+          <tr>
+            <th scope="row"> API Requests Remaining </th>
+            <td id="remaining_requests_cell"> </td>
+          </tr>
+          <tr>
+            <th scope="row"> Next API Request </th>
+            <td id="next_update_cell"> </td>
           </tr>
         </tbody>
         </table>

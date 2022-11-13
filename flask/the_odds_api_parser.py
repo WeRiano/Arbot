@@ -1,7 +1,8 @@
-import os
-import requests
+from os import environ
+from requests import get
+from json import dumps, loads
 from dotenv import load_dotenv
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
 
 from arbitrage import is_arbitrage, arbitrage_profit
 
@@ -10,33 +11,38 @@ def parse_commence_time(commence_time):
     start_time_lst = commence_time.split("T")
     start_time_lst[1] = start_time_lst[1][:-1]
     parsed_commence_time = start_time_lst[0] + " " + start_time_lst[1]
-    return parsed_commence_time
+    dt = datetime.strptime(parsed_commence_time, "%Y-%m-%d %H:%M:%S")
+    dt = dt + timedelta(hours=1)
+    return dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
-def get_delta_time_minutes(match_time):
-    match_list = match_time.split("T")
-    match_date_list = match_list[0].split("-")
-    match_time_list = match_list[1].split(":")
-    match_time_list[2] = match_time_list[2][:-1]
-    datetime_now = datetime.now(tz=timezone.utc)
-    datetime_match = datetime(int(match_date_list[0]), int(match_date_list[1]), int(match_date_list[2]),
-                              int(match_time_list[0]), int(match_time_list[1]), int(match_time_list[2]),
-                              tzinfo=timezone.utc)
-    delta = datetime_match - datetime_now
-    return delta.total_seconds() / 60
+def serialize_arbs(arbs):
+    res_lst = []
+    for arb_dict in arbs:
+        arb_str = dumps(arb_dict)
+        res_lst.append(arb_str)
+    return res_lst
 
 
-def fetch_the_odds_api_matches():
+def deserialize_arbs(serialized_arbs):
+    res_lst = []
+    for arb_str in serialized_arbs:
+        arb_dict = loads(arb_str)
+        res_lst.append(arb_dict)
+    return res_lst
+
+
+def get_the_odds_api_data():
     load_dotenv()
-    key = str(os.environ.get("THE_ODDS_API_KEY"))
+    key = str(environ.get("THE_ODDS_API_KEY"))
 
-    r = requests.get("https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey={0}&regions=eu&markets=h2h"
+    r = get("https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey={0}&regions=eu&markets=h2h"
                      .format(key))
-    return r.json()
+    return r.headers, r.json()
 
 
 def get_all_arbs():
-    the_odds_api_match_json = fetch_the_odds_api_matches()
+    headers, the_odds_api_match_json = get_the_odds_api_data()
     res = []
 
     for match in the_odds_api_match_json:
@@ -71,13 +77,6 @@ def get_all_arbs():
                     # No arbitrage 'within one bookmaker' (even if there is they probably won't allow you to bet on both)
                     continue
                 if is_arbitrage(o_a, o_b):
-                    # print("----------- Arbitrage spotted! ----------- ")
-                    # print("The category is {0}".format(category))
-                    # print("Team {0} versus {1}".format(team_a, team_b))
-                    # print("On bookmakers {0} and {1}".format(bookmaker_names[i], bookmaker_names[j]))
-                    # print("With odds {0} versus {1}".format(o_a, o_b))
-                    # print("Where the total profit is {0}%".format(arbitrage_profit(o_a, o_b, 100)))
-                    # print("The match is due in {0} minutes".format(get_delta_time_minutes(start_time)))
                     arb_dict = {
                         "category": category,
                         "team_a": team_a,
@@ -86,11 +85,11 @@ def get_all_arbs():
                         "bookmaker_b": bookmaker_names[j],
                         "odds_a": o_a,
                         "odds_b": o_b,
-                        "profit": arbitrage_profit(o_a, o_b, 100),
+                        "profit": round(arbitrage_profit(o_a, o_b, 100), 2),
                         "start_time": parse_commence_time(commence_time)
                     }
                     res.append(arb_dict)
-    return res
+    return headers["x-requests-remaining"], res
 
 
 def get_fake_arbs():
@@ -109,5 +108,5 @@ def get_fake_arbs():
             "start_time": parse_commence_time(commence_time)
         }
         res.append(arb_dict)
-    return res
+    return 1337, res
 
