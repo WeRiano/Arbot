@@ -51,6 +51,7 @@
               <tr>
                   <th scope="col"></th>
                   <th scope="col"> Team A </th>
+                  <th scope="col"> Draw </th>
                   <th scope="col"> Team B </th>
               </tr>
             </thead>
@@ -58,29 +59,34 @@
               <tr>
                 <th scope="row"> Name </th>
                 <td id="team_a_cell"> </td>
+                <td> </td>
                 <td id="team_b_cell"> </td>
               </tr>
               <tr>
                 <th scope="row"> Bookmaker </th>
                 <td id="bookmaker_a_cell"> </td>
+                <td id="bookmaker_draw_cell"> </td>
                 <td id="bookmaker_b_cell"> </td>
               </tr>
               <tr>
                 <th scope="row"> Odds </th>
                 <td id="odds_a_cell"> </td>
+                <td id="odds_draw_cell"> </td>
                 <td id="odds_b_cell"> </td>
               </tr>
               <tr>
                 <th scope="row"> To bet </th>
                 <td id="to_bet_a_cell"></td>
+                <td id="to_bet_draw_cell"></td>
                 <td id="to_bet_b_cell"></td>
               </tr>
             </tbody>
           </table>
         <div class="form-group">
           <form id="new_investment_form">
-            <input type="hidden" id="investment_odds_a" value="1">
-            <input type="hidden" id="investment_odds_b" value="1">
+            <input type="hidden" id="investment_odds_a" value="">
+            <input type="hidden" id="investment_odds_b" value="">
+            <input type="hidden" id="investment_odds_draw" value="">
             <input type="number" id="new_investment" name="new_investment" class="form-control"
                    placeholder="Enter bet return">
           </form>

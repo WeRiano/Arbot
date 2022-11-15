@@ -45,6 +45,7 @@ def get_all_arbs():
     headers, the_odds_api_match_json = get_the_odds_api_data()
     res = []
 
+    print(dumps(the_odds_api_match_json, indent=4))
     for match in the_odds_api_match_json:
         # There can't be an arbitrage if there is less than two bookmakers on a match
         if len(match["bookmakers"]) < 2:
@@ -57,7 +58,8 @@ def get_all_arbs():
         bookmaker_names = []
         odds_dict = {
             team_a: [],
-            team_b: []
+            team_b: [],
+            "Draw": [],
         }
         for bookmaker in match["bookmakers"]:
             bookmaker_names.append(bookmaker["title"])
@@ -65,30 +67,49 @@ def get_all_arbs():
                 if market["key"] != "h2h":
                     continue
                 for i, outcome in enumerate(market["outcomes"]):
-                    # TODO: We are ignoring draws for now but will implement in the future
-                    if outcome["name"] == "Draw":
-                        continue
                     odds_dict[outcome["name"]].append(outcome["price"])
-        if len(odds_dict) != 2:
-            print("Odds dictionary is not the expected length.")
+        # Now we go through all outcomes and check for arbitrage
         for i, o_a in enumerate(odds_dict[team_a]):
             for j, o_b in enumerate(odds_dict[team_b]):
-                if i == j:
-                    # No arbitrage 'within one bookmaker' (even if there is they probably won't allow you to bet on both)
-                    continue
-                if is_arbitrage(o_a, o_b):
-                    arb_dict = {
-                        "category": category,
-                        "team_a": team_a,
-                        "team_b": team_b,
-                        "bookmaker_a": bookmaker_names[i],
-                        "bookmaker_b": bookmaker_names[j],
-                        "odds_a": o_a,
-                        "odds_b": o_b,
-                        "profit": round(arbitrage_profit(o_a, o_b, 100), 2),
-                        "start_time": parse_commence_time(commence_time)
-                    }
-                    res.append(arb_dict)
+                if odds_dict["Draw"]:
+                    for k, o_draw in enumerate(odds_dict["Draw"]):
+                        if i == j or i == k or j == k:
+                            # No arbitrage 'within one bookmaker'
+                            # (even if there is they probably won't allow you to bet on both)
+                            continue
+                        if is_arbitrage(o_a, o_b, o_draw):
+                            arb_dict = {
+                                "category": category,
+                                "team_a": team_a,
+                                "team_b": team_b,
+                                "bookmaker_a": bookmaker_names[i],
+                                "bookmaker_b": bookmaker_names[j],
+                                "bookmaker_draw": bookmaker_names[k],
+                                "odds_a": o_a,
+                                "odds_b": o_b,
+                                "odds_draw": o_draw,
+                                "profit": round(arbitrage_profit(o_a, o_b, 100, o_draw), 2),
+                                "start_time": parse_commence_time(commence_time),
+                            }
+                            res.append(arb_dict)
+                else:
+                    if i == j:
+                        # No arbitrage 'within one bookmaker'
+                        # (even if there is they probably won't allow you to bet on both)
+                        continue
+                    if is_arbitrage(o_a, o_b):
+                        arb_dict = {
+                            "category": category,
+                            "team_a": team_a,
+                            "team_b": team_b,
+                            "bookmaker_a": bookmaker_names[i],
+                            "bookmaker_b": bookmaker_names[j],
+                            "odds_a": o_a,
+                            "odds_b": o_b,
+                            "profit": round(arbitrage_profit(o_a, o_b, 100), 2),
+                            "start_time": parse_commence_time(commence_time),
+                        }
+                        res.append(arb_dict)
     return headers["x-requests-remaining"], res
 
 
@@ -102,11 +123,20 @@ def get_fake_arbs():
             "team_b": "Team Super Awesome T1",
             "bookmaker_a": "Bet365",
             "bookmaker_b": "Betsson",
+            "bookmaker_draw": "Matchbook",
             "odds_a": i,
             "odds_b": 1.5,
             "profit": 13.37,
             "start_time": parse_commence_time(commence_time)
         }
+        if i % 2 == 0:
+            arb_dict["bookmaker_draw"] = "Matchbook"
+            arb_dict["odds_draw"] = 3.0
+            arb_dict["profit"] = 42.69
         res.append(arb_dict)
     return 1337, res
+
+
+if __name__ == "__main__":
+    arbs = get_all_arbs()
 

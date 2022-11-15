@@ -69,17 +69,23 @@
 """
 
 
-def is_arbitrage(odds_a, odds_b):
-    return 1 / odds_a + 1 / odds_b < 1
+def is_arbitrage(odds_a, odds_b, odds_draw=None):
+    if odds_draw is None:
+        return 1 / odds_a + 1 / odds_b < 1
+    return 1 / odds_a + 1 / odds_b + 1 / odds_draw < 1
 
 
-def arbitrage_bets(odds_a, odds_b, investment):
-    return investment / odds_a, investment / odds_b
+def arbitrage_bets(odds_a, odds_b, investment, odds_draw=None):
+    if odds_draw is None:
+        return investment / odds_a, investment / odds_b
+    return investment / odds_a, investment / odds_b, investment / odds_draw
 
 
-def arbitrage_profit(odds_a, odds_b, investment):
-    bets = arbitrage_bets(odds_a, odds_b, investment)
-    return investment - (bets[0] + bets[1])
+def arbitrage_profit(odds_a, odds_b, investment, odds_draw=None):
+    bets = arbitrage_bets(odds_a, odds_b, investment, odds_draw)
+    if len(bets) == 2:
+        return investment - (bets[0] + bets[1])
+    return investment - (bets[0] + bets[1] + bets[2])
 
 
 if __name__ == "__main__":

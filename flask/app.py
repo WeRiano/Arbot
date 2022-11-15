@@ -71,12 +71,18 @@ def new_investment():
     investment = int(request.form["new_investment"])
     odds_a = float(request.form["odds_a"])
     odds_b = float(request.form["odds_b"])
-    profit = round(arbitrage_profit(odds_a, odds_b, investment), 2)
-    to_bet = arbitrage_bets(odds_a, odds_b, investment)
+    odds_draw = request.form["odds_draw"]
+    if odds_draw == "":
+        odds_draw = None
+    else:
+        odds_draw = float(odds_draw)
+    profit = round(arbitrage_profit(odds_a, odds_b, investment, odds_draw), 2)
+    to_bet = arbitrage_bets(odds_a, odds_b, investment, odds_draw)
     return jsonify({
         "profit": profit,
         "to_bet_a": round(to_bet[0], 2),
-        "to_bet_b": round(to_bet[1], 2)
+        "to_bet_b": round(to_bet[1], 2),
+        "to_bet_draw": "" if odds_draw is None else round(to_bet[2], 2)
     })
 
 
@@ -90,7 +96,14 @@ def select_arb():
     data["remaining_requests"] = remaining_requests
     data["next_update"] = next_update_str
 
-    to_bet = arbitrage_bets(data["odds_a"], data["odds_b"], 100)
+    if "odds_draw" in data:
+        to_bet = arbitrage_bets(data["odds_a"], data["odds_b"], 100, data["odds_draw"])
+        data["to_bet_draw"] = round(to_bet[2], 2)
+    else:
+        to_bet = arbitrage_bets(data["odds_a"], data["odds_b"], 100)
+        data["to_bet_draw"] = ""
+        data["odds_draw"] = ""
+        data["bookmaker_draw"] = ""
     data["to_bet_a"] = round(to_bet[0], 2)
     data["to_bet_b"] = round(to_bet[1], 2)
     return jsonify(data)

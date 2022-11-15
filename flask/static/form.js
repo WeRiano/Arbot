@@ -4,7 +4,8 @@ $(document).ready(function() {
       data : {
         new_investment : $('#new_investment').val(),
         odds_a : $('#investment_odds_a').val(),
-        odds_b : $('#investment_odds_b').val()
+        odds_b : $('#investment_odds_b').val(),
+        odds_draw : $('#investment_odds_draw').val()
       },
       type: 'POST',
       url : '/new_investment'
@@ -12,6 +13,7 @@ $(document).ready(function() {
       $('#profit_cell').text(data.profit);
       $('#to_bet_a_cell').text(data.to_bet_a);
       $('#to_bet_b_cell').text(data.to_bet_b);
+      $('#to_bet_draw_cell').text(data.to_bet_draw);
     });
 
     event.preventDefault();
@@ -42,6 +44,11 @@ $(document).ready(function() {
 
       $('#investment_odds_a').val(data.odds_a);
       $('#investment_odds_b').val(data.odds_b);
+
+      $('#bookmaker_draw_cell').text(data.bookmaker_draw);
+      $('#odds_draw_cell').text(data.odds_draw);
+      $('#to_bet_draw_cell').text(data.to_bet_draw);
+      $('#investment_odds_draw').val(data.odds_draw);
     });
 
     event.preventDefault();
