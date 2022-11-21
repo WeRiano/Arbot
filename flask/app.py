@@ -17,8 +17,8 @@ arb_update_delta_hours = 2
 next_update_str_format = "%Y-%m-%d %H:%M:%S"
 
 # Function pointer that defines if we are using real or fake data
-#get_arbs = get_all_arbs
-get_arbs = get_fake_arbs
+get_arbs = get_all_arbs
+#get_arbs = get_fake_arbs
 
 flask_app = Flask(__name__)
 Bootstrap(flask_app)
