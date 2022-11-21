@@ -7,6 +7,25 @@ from datetime import datetime, timedelta
 from arbitrage import is_arbitrage, arbitrage_profit
 
 
+bookmaker_links = {
+    "1xBet": "https://1xbet.com/",
+    "888sport": "https://www.888sport.com/",
+    "Betclic": "https://www.betclic.com/",
+    "Betfair": "https://www.betfair.com/",
+    "BetOnline.ag": "https://www.betonline.ag/",
+    "Betsson": "https://www.betsson.com/",
+    "Pinnacle": "https://www.pinnacle.se/en/",
+    "Marathon Bet": "https://www.marathonbet.com/",
+    "Nordic Bet": "https://www.nordicbet.com/",
+    "Unibet": "https://www.unibet.com/",
+    "MyBookie.ag": "https://www.mybookie.ag/",
+    "Intertops": "https://everygame.eu/",
+    "Matchbook": "https://www.matchbook.com/",
+
+
+
+}
+
 def parse_commence_time(commence_time):
     start_time_lst = commence_time.split("T")
     start_time_lst[1] = start_time_lst[1][:-1]
@@ -45,7 +64,6 @@ def get_all_arbs():
     headers, the_odds_api_match_json = get_the_odds_api_data()
     res = []
 
-    print(dumps(the_odds_api_match_json, indent=4))
     for match in the_odds_api_match_json:
         # There can't be an arbitrage if there is less than two bookmakers on a match
         if len(match["bookmakers"]) < 2:
@@ -85,6 +103,9 @@ def get_all_arbs():
                                 "bookmaker_a": bookmaker_names[i],
                                 "bookmaker_b": bookmaker_names[j],
                                 "bookmaker_draw": bookmaker_names[k],
+                                #"bookmaker_a_link": bookmaker_links[bookmaker_names[i]],
+                                #"bookmaker_b_link": bookmaker_links[bookmaker_names[j]],
+                                #"bookmaker_draw_link": bookmaker_links[bookmaker_names[k]],
                                 "odds_a": o_a,
                                 "odds_b": o_b,
                                 "odds_draw": o_draw,
@@ -104,6 +125,8 @@ def get_all_arbs():
                             "team_b": team_b,
                             "bookmaker_a": bookmaker_names[i],
                             "bookmaker_b": bookmaker_names[j],
+                            #"bookmaker_a_link": bookmaker_links[bookmaker_names[i]],
+                            #"bookmaker_b_link": bookmaker_links[bookmaker_names[j]],
                             "odds_a": o_a,
                             "odds_b": o_b,
                             "profit": round(arbitrage_profit(o_a, o_b, 100), 2),
@@ -121,9 +144,12 @@ def get_fake_arbs():
             "category": "LEAGUE OF LEGENDS",
             "team_a": "Team Super Cool DRX",
             "team_b": "Team Super Awesome T1",
-            "bookmaker_a": "Bet365",
+            "bookmaker_a": "Betfair",
             "bookmaker_b": "Betsson",
             "bookmaker_draw": "Matchbook",
+            "bookmaker_a_link": bookmaker_links["Betfair"],
+            "bookmaker_b_link": bookmaker_links["Betsson"],
+            "bookmaker_draw_link": bookmaker_links["Matchbook"],
             "odds_a": i,
             "odds_b": 1.5,
             "profit": 13.37,

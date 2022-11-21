@@ -99,7 +99,7 @@
           </tr>
           <tr>
             <th scope="row"> Category </th>
-            <td id="category_cell" > </td>
+            <td id="category_cell"> </td>
           </tr>
           <tr>
             <th scope="row"> Match Start </th>
@@ -107,11 +107,15 @@
           </tr>
           <tr>
             <th scope="row"> API Requests Remaining </th>
-            <td id="remaining_requests_cell"> </td>
+            <td> {{ remaining_requests }} </td>
           </tr>
           <tr>
             <th scope="row"> Next API Request </th>
-            <td id="next_update_cell"> </td>
+            <td> {{ next_update }} </td>
+          </tr>
+          <tr>
+            <th scope="row"> Arbs found </th>
+            <td> {{ arbs|length }} </td>
           </tr>
         </tbody>
         </table>

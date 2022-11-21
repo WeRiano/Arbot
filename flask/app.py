@@ -17,8 +17,8 @@ arb_update_delta_hours = 2
 next_update_str_format = "%Y-%m-%d %H:%M:%S"
 
 # Function pointer that defines if we are using real or fake data
-get_arbs = get_all_arbs
-#get_arbs = get_fake_arbs
+#get_arbs = get_all_arbs
+get_arbs = get_fake_arbs
 
 flask_app = Flask(__name__)
 Bootstrap(flask_app)
@@ -91,10 +91,6 @@ def select_arb():
     select_arb_index = int(request.form["select_arb_index"])
     arbs = get_arbs_from_redis()
     data = arbs[select_arb_index]
-    remaining_requests = redis.get("remaining_requests")
-    next_update_str = redis.get("next_update")
-    data["remaining_requests"] = remaining_requests
-    data["next_update"] = next_update_str
 
     if "odds_draw" in data:
         to_bet = arbitrage_bets(data["odds_a"], data["odds_b"], 100, data["odds_draw"])
