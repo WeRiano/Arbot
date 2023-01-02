@@ -44,6 +44,7 @@ def index():
     next_update = datetime.strptime(redis.get("next_update"), next_update_str_format)
     next_update = utc.localize(next_update)
     now = datetime.now(tz=timezone.utc) + timedelta(hours=1)
+    print("Now is {0}".format(now.strftime(next_update_str_format)))
     if next_update < now:
         # Next update is now! Let us calculate when the next update is ...
         next_update = next_update + timedelta(hours=arb_update_delta_hours)
@@ -61,7 +62,11 @@ def index():
         remaining_requests = redis.get("remaining_requests")
         next_update_str = next_update.strftime(next_update_str_format)
 
+    print("Next update is {0}".format(next_update_str))
     ms_until_next_update = int((next_update - now).total_seconds() * 1000)
+    if ms_until_next_update < 0:
+        ms_until_next_update = arb_update_delta_hours*60*60*1000
+        print("ERROR: The next update is somehow behind now. Setting next update to be in {0} hours.".format(arb_update_delta_hours))
     return render_template("index.html", arbs=arbs, ms_until_refresh=ms_until_next_update, next_update=next_update_str,
                            remaining_requests=remaining_requests)
 
